@@ -1,5 +1,4 @@
 import pygame
-from tile import Tile
 
 class TileMap:
     def __init__(self, size: tuple, tile_size: tuple):

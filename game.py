@@ -13,18 +13,24 @@ class Game:
         self.screen = pygame.display.set_mode((S_WIDTH, S_HEIGHT))
         self.clock = pygame.time.Clock()
 
+        # background
+        self.bg_img = pygame.transform.scale(pygame.image.load('assets/background.jpeg'), (S_WIDTH, S_HEIGHT))
+
         # initialize the world
         self.tile_map = TileMap((S_WIDTH, S_HEIGHT), (64, 64))
 
     
     def run(self):
+        # event loop
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
+            # background
+            self.screen.blit(self.bg_img, (0,0))
+            # logistic
             self.clock.tick(60)
-            # update the whole screen
             pygame.display.update()
 
 if __name__ == "__main__":
