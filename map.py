@@ -39,10 +39,14 @@ class Level:
 
     def horizontal_collisions(self):
         player = self.player.sprite
+        # move the player
         player.rect.x += player.direction.x * player.speed
+        # hitbox
+        player.hitbox = (player.rect.x + 11, player.rect.y, 42, 64)
+        hitbox = pygame.Rect(player.hitbox)
         # collisions between the player and the tile map
         for sprite in self.tiles.sprites():
-            if sprite.rect.colliderect(player.rect):
+            if sprite.rect.colliderect(hitbox):
                 if player.direction.x < 0:
                     player.rect.left = sprite.rect.right
                 elif player.direction.x > 0:
@@ -50,13 +54,20 @@ class Level:
 
     def vertical_collisions(self):
         player = self.player.sprite
+        # apply gravity to the player
         player.apply_gravity()
+        # hit box
+        player.hitbox = (player.rect.x + 11, player.rect.y, 42, 64)
+        hitbox = pygame.Rect(player.hitbox)
         # collisions between the player and the tile map
         for sprite in self.tiles.sprites():
-            if sprite.rect.colliderect(player.rect):
+            if sprite.rect.colliderect(hitbox):
+                # ground
                 if player.direction.y > 0:
                     player.rect.bottom = sprite.rect.top
                     player.direction.y = 0
+                    player.is_grounded = True
+                # ceiling
                 elif player.direction.y < 0:
                     player.rect.top = sprite.rect.bottom
                     player.direction.y = 0
@@ -71,3 +82,6 @@ class Level:
         self.horizontal_collisions()
         self.vertical_collisions()
         self.player.draw(self.display_s)
+
+        # hit box test drawing
+        #pygame.draw.rect(self.display_s, (255, 0, 0), self.player.sprite.hitbox, 2)

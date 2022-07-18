@@ -10,7 +10,7 @@ class Player(pygame.sprite.Sprite):
         # setup health
         self.health = 100
         # setup GFX
-        self.image = pygame.image.load(img_path)
+        self.image = pygame.image.load(img_path).convert_alpha()
         self.rect = self.image.get_rect(center=pos)
         # setup move
         self.direction = pygame.math.Vector2(0, 0)
@@ -18,6 +18,8 @@ class Player(pygame.sprite.Sprite):
         self.gravity = 0.8
         self.jump_speed = -16
         self.is_grounded = True
+        # hitbox
+        self.hitbox = None
     
     def apply_gravity(self):
         self.direction.y += self.gravity
@@ -39,6 +41,9 @@ class Player(pygame.sprite.Sprite):
     
     def jump(self):
         self.direction.y = self.jump_speed
+        self.is_grounded = False
     
     def update(self):
         self.get_input()
+        # setup collisions
+        self.hitbox = pygame.Rect(self.rect.x + 11, self.rect.y, 42, 64)
