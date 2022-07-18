@@ -1,9 +1,9 @@
 from sys import exit
-from map import TileMap
+from map import Level
+from player import Player
 from data import *
 import pygame
 
-S_WIDTH, S_HEIGHT = 1080, 720
 
 class Game:
     def __init__(self):
@@ -11,12 +11,15 @@ class Game:
         pygame.init()
         pygame.display.set_caption("Scribble Platform Game")
         pygame.mouse.set_visible(False)
-        self.screen = pygame.display.set_mode((S_WIDTH, S_HEIGHT), pygame.RESIZABLE)
+        self.screen = pygame.display.set_mode((S_WIDTH, S_HEIGHT))
         self.clock = pygame.time.Clock()
 
+        # background
+        self.bg = pygame.Surface((S_WIDTH, S_HEIGHT))
+        self.bg.fill('lightgray')
+
         # initialize the world
-        self.tile_map = TileMap(self.screen, (S_WIDTH, S_HEIGHT), (64, 64), MAP_MATRIX)
-        self.tile_map.render()
+        self.level = Level(MAP_MATRIX, self.screen)
     
     def run(self):
         # event loop
@@ -25,8 +28,10 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
+            # background
+            self.screen.blit(self.bg, (0, 0))
             # render map
-            self.tile_map.render()
+            self.level.render()
             # logistic
             self.clock.tick(60)
             pygame.display.update()
