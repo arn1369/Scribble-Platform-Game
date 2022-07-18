@@ -1,0 +1,7 @@
+{
+  "player": {
+    "image": {
+      "path" : "../data/assets/players/characters/player/character_roundGreen.png"
+    }
+  }
+}

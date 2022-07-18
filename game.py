@@ -1,8 +1,9 @@
 from sys import exit
-from map import TileMap
+from map import Level
+from player import Player
+from data import *
 import pygame
 
-S_WIDTH, S_HEIGHT = 800, 600
 
 class Game:
     def __init__(self):
@@ -14,11 +15,11 @@ class Game:
         self.clock = pygame.time.Clock()
 
         # background
-        self.bg_img = pygame.transform.scale(pygame.image.load('assets/background.jpeg'), (S_WIDTH, S_HEIGHT))
+        self.bg = pygame.Surface((S_WIDTH, S_HEIGHT))
+        self.bg.fill('lightgray')
 
         # initialize the world
-        self.tile_map = TileMap((S_WIDTH, S_HEIGHT), (64, 64))
-
+        self.level = Level(MAP_MATRIX, self.screen)
     
     def run(self):
         # event loop
@@ -28,7 +29,9 @@ class Game:
                     pygame.quit()
                     exit()
             # background
-            self.screen.blit(self.bg_img, (0,0))
+            self.screen.blit(self.bg, (0, 0))
+            # render map
+            self.level.render()
             # logistic
             self.clock.tick(60)
             pygame.display.update()
