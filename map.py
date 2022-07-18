@@ -3,11 +3,16 @@ from player import Player
 from data import *
 
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, pos, size) -> None:
+    def __init__(self, pos, img_name=None) -> None:
         super().__init__()
-        self.image = pygame.Surface((size, size))
-        self.image.fill('purple') # no texture for now
-        self.rect = self.image.get_rect(topleft=pos)
+        if img_name != None:
+            #TRICK: Setting the tile size to 60 (img=64x64) so they're aligned
+            # so collider is at 60, but img is at 64
+            self.image = pygame.image.load(f'assets/environment/tiles/tiles/{img_name}')
+        else:
+            self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
+            self.image.fill('purple') # no texture
+        self.rect = pygame.Rect(pos[0]-1, pos[1]-1, TILE_SIZE-2, TILE_SIZE-2)
     
     def update(self, x_shift):
         self.rect.x += x_shift
@@ -33,7 +38,9 @@ class Level:
                     case 'X':
                         self.player.add(Player((x, y), 'assets/players/characters/player/character_squareGreen1.png'))
                     case 1:
-                        tile = Tile((x,y), TILE_SIZE)
+                        tile = Tile((x,y), 'tile.png')
+                    case 2:
+                        tile = Tile((x,y), 'tile_brick.png')
                 if tile != None:
                     self.tiles.add(tile)
 
@@ -47,8 +54,7 @@ class Level:
                 if player.direction.x < 0:
                     player.rect.left = sprite.rect.right
                 elif player.direction.x > 0:
-                    player.rect.right = sprite.rect.left
-                
+                    player.rect.right = sprite.rect.left       
 
     def vertical_collisions(self):
         player = self.player.sprite
@@ -76,7 +82,7 @@ class Level:
         self.player.update()
         self.horizontal_collisions()
         self.vertical_collisions()
+        #DEBUG: 
+        pygame.draw.rect(self.display_s, (255, 0, 0), self.player.sprite.rect, 2)
         self.player.draw(self.display_s)
-
-        #DEBUG: display hitbox
-        #pygame.draw.rect(self.display_s, (255, 0, 0), self.player.sprite.rect, 2)
+        

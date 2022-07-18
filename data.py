@@ -6,7 +6,7 @@ ACC = 0.3
 FRICTION = -0.1
 
 # tile
-TILE_SIZE = 64
+TILE_SIZE = 60
 
 MAP_MATRIX = [
     [1, 0, 0, 0, 'X', 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],

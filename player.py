@@ -11,7 +11,7 @@ class Player(pygame.sprite.Sprite):
         self.health = 100
         # setup GFX
         self.image = pygame.image.load(img_path).convert_alpha()
-        self.rect = pygame.rect.Rect(pos[0]+11, pos[1], 40, 60)
+        self.rect = pygame.rect.Rect(pos[0]+11, pos[1], 40, 59)
         # setup move
         self.direction = pygame.math.Vector2(0, 0)
         self.speed = 8
