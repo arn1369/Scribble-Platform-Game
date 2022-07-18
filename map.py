@@ -27,11 +27,11 @@ class Level:
         tile = None
         for row_index, row in enumerate(self.level_data):
             for col_index, cell in enumerate(row):
-                print(f"{row_index};{col_index} : {cell}")
+                #DEBUG print(f"{row_index};{col_index} : {cell}")
                 x, y = col_index*TILE_SIZE, row_index*TILE_SIZE
                 match cell:
                     case 'X':
-                        self.player.add(Player((x, y), 'assets/players/characters/player/character_squareGreen.png'))
+                        self.player.add(Player((x, y), 'assets/players/characters/player/character_squareGreen1.png'))
                     case 1:
                         tile = Tile((x,y), TILE_SIZE)
                 if tile != None:
@@ -41,27 +41,22 @@ class Level:
         player = self.player.sprite
         # move the player
         player.rect.x += player.direction.x * player.speed
-        # hitbox
-        player.hitbox = (player.rect.x + 11, player.rect.y, 42, 64)
-        hitbox = pygame.Rect(player.hitbox)
         # collisions between the player and the tile map
         for sprite in self.tiles.sprites():
-            if sprite.rect.colliderect(hitbox):
+            if sprite.rect.colliderect(player.rect):
                 if player.direction.x < 0:
                     player.rect.left = sprite.rect.right
                 elif player.direction.x > 0:
                     player.rect.right = sprite.rect.left
+                
 
     def vertical_collisions(self):
         player = self.player.sprite
         # apply gravity to the player
         player.apply_gravity()
-        # hit box
-        player.hitbox = (player.rect.x + 11, player.rect.y, 42, 64)
-        hitbox = pygame.Rect(player.hitbox)
         # collisions between the player and the tile map
         for sprite in self.tiles.sprites():
-            if sprite.rect.colliderect(hitbox):
+            if sprite.rect.colliderect(player.rect):
                 # ground
                 if player.direction.y > 0:
                     player.rect.bottom = sprite.rect.top
@@ -83,5 +78,5 @@ class Level:
         self.vertical_collisions()
         self.player.draw(self.display_s)
 
-        # hit box test drawing
-        #pygame.draw.rect(self.display_s, (255, 0, 0), self.player.sprite.hitbox, 2)
+        #DEBUG: display hitbox
+        #pygame.draw.rect(self.display_s, (255, 0, 0), self.player.sprite.rect, 2)
