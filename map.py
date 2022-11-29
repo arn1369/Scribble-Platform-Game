@@ -1,4 +1,3 @@
-import pygame
 from player import Player
 from data import *
 
@@ -12,17 +11,20 @@ class Tile(pygame.sprite.Sprite):
         else:
             self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
             self.image.fill('purple') # no texture
-        self.rect = pygame.Rect(pos[0]-1, pos[1]-1, TILE_SIZE-2, TILE_SIZE-2)
+        #self.rect = pygame.Rect(pos[0], pos[1], TILE_SIZE, TILE_SIZE)
+        self.rect = self.image.get_rect(center=pos)
+        self.rect.x += 32
+        self.rect.y += 32
     
-    def update(self, x_shift):
-        self.rect.x += x_shift
+    def update(self, shift=(0,0)):
+        self.rect.x += shift[0]
+        self.rect.y += shift[1]
 
 class Level:
-    def __init__(self, level_data, surface) -> None:
+    def __init__(self, level_data) -> None:
         # setup attributes
-        self.display_s = surface
         self.level_data = level_data
-        self.world_shift = 0
+        self.world_shift = (0,0)
         # setup the tiles
         self.tiles = pygame.sprite.Group()
         # create the player
@@ -47,7 +49,7 @@ class Level:
     def horizontal_collisions(self):
         player = self.player.sprite
         # move the player
-        player.rect.x += player.direction.x * player.speed
+        player.rect.x += player.direction.x * player.speed * DeltaTime.dt
         # collisions between the player and the tile map
         for sprite in self.tiles.sprites():
             if sprite.rect.colliderect(player.rect):
@@ -73,16 +75,38 @@ class Level:
                     player.rect.top = sprite.rect.bottom
                     player.direction.y = 0
 
-    def render(self):
-        # draw and update the tiles
-        self.tiles.update(self.world_shift)
-        self.tiles.draw(self.display_s)
+        # ground check
+        for tile in self.tiles:
+            if tile.rect.collidepoint(self.player.sprite.rect.bottomleft) \
+                or tile.rect.collidepoint(self.player.sprite.rect.bottomright):
+                self.player.sprite.is_grounded = True
+                break
+            self.player.sprite.is_grounded = False
+    
+    def draw(self, surface):
+        self.tiles.draw(surface)
+        self.player.sprite.draw(surface)
 
-        # draw and update the player
+    def update(self):
+        # update the tiles
+        self.tiles.update(self.world_shift)
+        # //*DEBUG: Show the tilemap collider
+        #for tile in self.tiles:
+        #    pygame.draw.rect(self.render, (0, 255, 0), tile.rect, 2)
+        
+
+        # update the player
         self.player.update()
         self.horizontal_collisions()
         self.vertical_collisions()
-        #DEBUG: 
-        pygame.draw.rect(self.display_s, (255, 0, 0), self.player.sprite.rect, 2)
-        self.player.draw(self.display_s)
+        # //* DEBUG: Show the player collider
+        #pygame.draw.rect(self.render, (255, 0, 0), self.player.sprite.rect, 2)
+
+        # //? it that in the player class ?
+        # //? ive got a huge fucking cock
+        # //? okay so I just had a question : rotate the sword with the cursor or just animate it and when
+        # //? mouse click it play that animation (add hit point, range, attack, etc.)
+        # draw and update the weapons
+        #self.player.sprite.weapon.draw(self.render)
+        #self.player.sprite.weapon.update()
         
